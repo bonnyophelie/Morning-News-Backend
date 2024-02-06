@@ -4,7 +4,6 @@ default:
 stages:
   - test
   - sonarqube-check
-  - sonarqube-vulnerability-report
   
 testeslint-job:
   stage: test
@@ -35,4 +34,3 @@ sonarqube-check:
       - .sonar/cache
   script: 
     - sonar-scanner
-  allow_failure: true
