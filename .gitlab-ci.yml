@@ -1,0 +1,20 @@
+default:
+  image: cypress/browsers:node16.18.0-chrome107-ff106-edge
+
+stages:
+  - test
+
+testeslint-job:
+  stage: test
+  script:
+    - npm install
+    - npx eslint .
+  only:
+    - main
+
+locust-job:
+  image: debian:latest
+  stage: test
+  script:
+    - pip3 install locust
+    - locust --headless --users 100 --spawn-rate 20 -H https://morningnews.obadasoussachaddad.fr/ -t 5s --only-summary

@@ -18,6 +18,8 @@
     "uid2": "^1.0.0"
   },
   "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
     "jest": "^28.1.1",
     "supertest": "^6.2.3"
   }
