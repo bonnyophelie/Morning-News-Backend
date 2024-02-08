@@ -42,7 +42,7 @@ dockerbuild-job:
   services:
   - docker:20.10.16-dind
   before_script:
-    - echo "$DOCKER_PAT" | docker login -u $DOCKER_REGISTRY_USER --password-stdin
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_PAT
       
   script:
     - docker build -t obadahaddad/morningnews --no-cache --build-arg url=$CONNECTION_STRING .
