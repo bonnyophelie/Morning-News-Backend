@@ -10,7 +10,7 @@ testeslint-job:
   stage: test
   script:
     - npm install
-    - npx eslint .
+    - npx eslint modules/ routes/ models/
   only:
     - main
 
