@@ -11,6 +11,7 @@ test-eslint-and-jest_job:
   script:
     - npm install
     - npx eslint modules/ routes/ models/
+    - npm start &
     - npm run test
   only:
     - main
