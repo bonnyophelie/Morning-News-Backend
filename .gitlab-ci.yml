@@ -38,7 +38,6 @@ sonarqube-check:
     - sonar-scanner
 
 dockerbuild-job:
-  image: docker:latest
   stage: build
   image: docker:20.10.16
   services:
