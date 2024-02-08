@@ -45,10 +45,10 @@ dockerbuild-job:
 
 
   before_script:
-    - docker login -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_PASSWORD}
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_PAT
 
 
   script:
-    - docker build -t obadahaddad/morningnews --no-cache --build-arg url=${CONNECTION_STRING} .
+    - docker build -t obadahaddad/morningnews --no-cache --build-arg url=$CONNECTION_STRING .
     - docker push obadahaddad/morningnews
 
