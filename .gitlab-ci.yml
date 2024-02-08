@@ -41,11 +41,10 @@ dockerbuild-job:
   stage: build
   image: docker:20.10.16
   services:
-  - docker:20.10.16-dind
+    - docker:20.10.16-dind
   before_script:
     - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_PAT
-      
+
   script:
     - docker build -t obadahaddad/morningnews --no-cache --build-arg url=$CONNECTION_STRING .
     - docker push obadahaddad/morningnews
-
