@@ -37,9 +37,13 @@ sonarqube-check:
     - sonar-scanner
 
 dockerbuild-job:
-  image: ruby:2.7
   stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_PAT
+
   script:
-    - docker login -u $(DOCKER_REGISTRY_USER) -p $(DOCKER_PAT)
-    - docker build -t obadahaddad/morningnews --no-cache --build-arg url=$(CONNECTION_STRING) .
+    - docker build -t obadahaddad/morningnews --no-cache --build-arg url=$CONNECTION_STRING .
     - docker push obadahaddad/morningnews
