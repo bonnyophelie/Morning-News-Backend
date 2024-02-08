@@ -37,7 +37,7 @@ sonarqube-check:
     - sonar-scanner
 
 dockerbuild-job:
-  image: ruby:2.7
+  image: docker:latest
   stage: build
   script:
     - docker login -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_PAT}
