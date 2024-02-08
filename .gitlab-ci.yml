@@ -6,11 +6,12 @@ stages:
   - sonarqube-check
   - build
 
-testeslint-job:
+test-eslint-and-jest_job:
   stage: test
   script:
     - npm install
     - npx eslint modules/ routes/ models/
+    - npm run test
   only:
     - main
 
