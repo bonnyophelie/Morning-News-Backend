@@ -6,12 +6,26 @@ stages:
   - sonarqube-check
   - build
 
+dockerbuild_gitlab-job:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker login -u $CI_REGISTRY ObadaS -p $GITLAB_PAT
+
+  script:
+    - docker build -t $IMAGE_NAME:${CI_COMMIT_SHORT_SHA} --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker push $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
+  only:
+    - main
+
 test-eslint-and-jest_job:
+  image: $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
   stage: test
   script:
     - npm install
     - npx eslint modules/ routes/ models/
-    - npm start &
     - npm run test
   only:
     - main
@@ -38,14 +52,30 @@ sonarqube-check:
   script:
     - sonar-scanner
 
-dockerbuild-job:
+dockerbuild_gitlab-job:
   stage: build
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
   before_script:
-    - docker login -u $DOCKER_REGISTRY_USER  --password-stdin <<<$DOCKER_PAT
+    - docker login -u $CI_REGISTRY ObadaS -p $GITLAB_PAT
 
   script:
-    - docker build -t obadahaddad/morningnews --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker build -t $IMAGE_NAME:${CI_COMMIT_SHORT_SHA} --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker push $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
+  only:
+    - main
+
+dockerbuild_docker-job:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker login -u  $DOCKER_REGISTRY_USER  -p $DOCKER_PAT
+
+  script:
+    - docker build -t obadahaddad/morningnews:latest --no-cache --build-arg url=$CONNECTION_STRING .
     - docker push obadahaddad/morningnews
+  only:
+    - pre-prod
