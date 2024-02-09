@@ -26,6 +26,7 @@ test-eslint-and-jest_job:
   image: $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
   stage: test-image
   script:
+    - npm isntall eslint jest
     - npx eslint modules/ routes/ models/
     - npm run test
   only:
