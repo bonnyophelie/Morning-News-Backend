@@ -2,13 +2,13 @@ default:
   image: node:16.20.2-buster
 
 stages:
-  - build_test
-  - test
+  - build-test
+  - test-image
   - sonarqube-check
-  - build
+  - build-docker
 
 dockerbuild_gitlab-job:
-  stage: build_test
+  stage: build-test
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
@@ -23,7 +23,7 @@ dockerbuild_gitlab-job:
 
 test-eslint-and-jest_job:
   image: $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
-  stage: test
+  stage: test-image
   script:
     - npm install
     - npx eslint modules/ routes/ models/
@@ -55,22 +55,8 @@ sonarqube-check:
   script:
     - sonar-scanner
 
-dockerbuild_gitlab-job:
-  stage: build
-  image: docker:20.10.16
-  services:
-    - docker:20.10.16-dind
-  before_script:
-    - docker login -u $CI_REGISTRY ObadaS -p $GITLAB_PAT
-
-  script:
-    - docker build -t $IMAGE_NAME:${CI_COMMIT_SHORT_SHA} --no-cache --build-arg url=$CONNECTION_STRING .
-    - docker push $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
-  only:
-    - main
-
 dockerbuild_docker-job:
-  stage: build
+  stage: build-docker
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
