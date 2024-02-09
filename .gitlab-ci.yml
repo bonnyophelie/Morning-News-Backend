@@ -2,12 +2,13 @@ default:
   image: node:16.20.2-buster
 
 stages:
+  - build_test
   - test
   - sonarqube-check
   - build
 
 dockerbuild_gitlab-job:
-  stage: build
+  stage: build_test
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
@@ -36,6 +37,8 @@ locust-job:
   script:
     - pip3 install locust
     - locust --headless --users 100 --spawn-rate 20 -H https://morningnews.obadasoussachaddad.fr/ -t 5s --only-summary
+  only:
+    - pre-prod
 
 sonarqube-check:
   stage: sonarqube-check
