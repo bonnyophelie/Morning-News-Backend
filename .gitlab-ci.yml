@@ -4,6 +4,7 @@ default:
 stages:
   - build-test
   - test-image
+  - test-preprod
   - sonarqube-check
   - build-docker
 
@@ -33,7 +34,7 @@ test-eslint-and-jest_job:
 
 locust-job:
   image: python:latest
-  stage: test
+  stage: test-preprod
   script:
     - pip3 install locust
     - locust --headless --users 100 --spawn-rate 20 -H https://morningnews.obadasoussachaddad.fr/ -t 5s --only-summary
