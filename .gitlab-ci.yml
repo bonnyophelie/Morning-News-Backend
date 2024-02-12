@@ -84,6 +84,7 @@ kubectl_pre_prod-job:
   image: alpine/k8s:1.26.13
   stage: pre_prod-dep
   script:
+    - export $KUBECONFIG
     - kubectl rollout restart deployment morningnews
   only:
     - pre-prod
@@ -92,7 +93,7 @@ kubectl_prod-job:
   image: alpine/k8s:1.26.13
   stage: prod-dep
   script:
-    - excport $KUBECONFIG
+    - export $KUBECONFIG
     - kubectl rollout restart deployment morningnews
   only:
     - prod
