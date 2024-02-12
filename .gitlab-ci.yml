@@ -7,8 +7,11 @@ stages:
   - test-preprod
   - sonarqube-check
   - build-docker
+  - build-prod
+  - pre_prod-dep
+  - prod-dep
 
-dockerbuild_gitlab-job:
+dockerbuild_main-job:
   stage: build-test
   image: docker:20.10.16
   services:
@@ -56,7 +59,7 @@ sonarqube-check:
   script:
     - sonar-scanner
 
-dockerbuild_docker-job:
+dockerbuild_pre_prod-job:
   stage: build-docker
   image: docker:20.10.16
   services:
@@ -65,7 +68,37 @@ dockerbuild_docker-job:
     - docker login -u  $DOCKER_REGISTRY_USER  -p $DOCKER_PAT
 
   script:
-    - docker build -t obadahaddad/morningnews:latest --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker build -t obadahaddad/morningnews:pre-prod --no-cache --build-arg url=$CONNECTION_STRING .
     - docker push obadahaddad/morningnews
   only:
     - pre-prod
+
+dockerbuild_prod-job:
+  stage: build-prod
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker login -u  $DOCKER_REGISTRY_USER  -p $DOCKER_PAT
+
+  script:
+    - docker build -t obadahaddad/morningnews:prod --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker push obadahaddad/morningnews
+  only:
+    - prod
+
+kubectl_pre_prod-job:
+  image: bitnami/kubectl
+  stage: pre_prod-dep
+  script:
+    - kubectl rollout restart deployment morningnews
+  only:
+    - pre-prod
+
+kubectl_prod-job:
+  image: bitnami/kubectl
+  stage: prod-dep
+  script:
+    - kubectl rollout restart deployment morningnews
+  only:
+    - prod
