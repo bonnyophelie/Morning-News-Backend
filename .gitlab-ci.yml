@@ -81,12 +81,14 @@ dockerbuild_prod-job:
   tags: [dockerfile]
 
 kubectl_pre_prod-job:
-  image: alpine/k8s:1.26.13
   stage: pre_prod-dep
   script:
+    - echo $KUBECONFIG > kube-config.yml
+    - export KUBECONFIG=kube-config.yml
     - kubectl rollout restart deployment morningnews
   only:
     - pre-prod
+  tags: [dockerfile]
 
 kubectl_prod-job:
   image: alpine/k8s:1.26.13
