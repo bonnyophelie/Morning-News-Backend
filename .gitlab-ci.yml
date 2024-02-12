@@ -92,6 +92,7 @@ kubectl_prod-job:
   image: alpine/k8s:1.26.13
   stage: prod-dep
   script:
+    - excport $KUBECONFIG
     - kubectl rollout restart deployment morningnews
   only:
     - prod
