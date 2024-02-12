@@ -15,7 +15,6 @@ dockerbuild_main-job:
   stage: build-test
   before_script:
     - docker login $CI_REGISTRY -u ObadaS -p $GITLAB_PAT
-
   script:
     - docker build -t $IMAGE_NAME:${CI_COMMIT_SHORT_SHA} --no-cache --build-arg url=$CONNECTION_STRING .
     - docker push $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
@@ -82,7 +81,7 @@ dockerbuild_prod-job:
   tags: [dockerfile]
 
 kubectl_pre_prod-job:
-  image: bitnami/kubectl
+  image: alpine/k8s
   stage: pre_prod-dep
   script:
     - kubectl rollout restart deployment morningnews
@@ -90,7 +89,7 @@ kubectl_pre_prod-job:
     - pre-prod
 
 kubectl_prod-job:
-  image: bitnami/kubectl
+  image: alpine/k8s
   stage: prod-dep
   script:
     - kubectl rollout restart deployment morningnews
