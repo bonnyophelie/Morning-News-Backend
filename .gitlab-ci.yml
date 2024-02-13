@@ -37,7 +37,7 @@ locust-job:
   stage: test-preprod
   script:
     - pip3 install locust
-    - locust --headless --users 100 --spawn-rate 20 -H https://morningnews.obadasoussachaddad.fr/ -t 5s --only-summary
+    - locust --headless --users 100 --spawn-rate 20 -H https://morningnews.obadasoussachaddad.fr/ -t 1s --only-summary
   only:
     - pre-prod
 
@@ -58,13 +58,10 @@ sonarqube-check:
 
 dockerbuild_pre_prod-job:
   stage: build-docker
-  before_script:
-    - docker login -u  $DOCKER_REGISTRY_USER  -p $DOCKER_PAT
-
+    - docker login $CI_REGISTRY -u ObadaS -p $GITLAB_PAT
   script:
-    - docker build -t obadahaddad/morningnews:pre-prod --no-cache --build-arg url=$CONNECTION_STRING .
-    - docker push obadahaddad/morningnews:pre-prod
-  only:
+    - docker build -t $IMAGE_NAME:pre-prod --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker push $IMAGE_NAME:pre-prod
     - pre-prod
   tags: [dockerfile]
 
