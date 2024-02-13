@@ -57,6 +57,7 @@ sonarqube-check:
     - sonar-scanner
   only:
     - main
+
 dockerbuild_pre_prod-job:
   stage: build-docker
   before_script:
@@ -83,7 +84,7 @@ dockerbuild_prod-job:
 kubectl_pre_prod-job:
   stage: pre_prod-dep
   script:
-    - echo $KUBECONFIG > kube-config.json
+    - echo $KUBECONFIGPREPROD > kube-config.json
     - yq -p json -o yaml kube-config.json > kube-config.yaml
     - kubectl --kubeconfig kube-config.yaml rollout restart deployment morningnews
   only:
@@ -93,7 +94,7 @@ kubectl_pre_prod-job:
 kubectl_prod-job:
   stage: prod-dep
   script:
-    - echo $KUBECONFIG > kube-config.json
+    - echo $KUBECONFIGPROD > kube-config.json
     - yq -p json -o yaml kube-config.json > kube-config.yaml
     - kubectl --kubeconfig rollout restart deployment morningnews
   only:
