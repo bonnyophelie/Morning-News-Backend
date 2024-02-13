@@ -87,8 +87,7 @@ kubectl_pre_prod-job:
     - yq -p json -o yaml kube-config.json > kube-config.yaml
     - cat kube-config.json
     - cat kube-config.yaml
-    - export KUBECONFIG=kube-config.yml
-    - kubectl rollout restart deployment morningnews
+    - kubectl --kubeconfig kube-config.yaml rollout restart deployment morningnews
   only:
     - pre-prod
   tags: [dockerfile]
@@ -97,6 +96,6 @@ kubectl_prod-job:
   image: alpine/k8s:1.26.13
   stage: prod-dep
   script:
-    - kubectl rollout restart deployment morningnews
+    - kubectl --kubeconfig rollout restart deployment morningnews
   only:
     - prod
