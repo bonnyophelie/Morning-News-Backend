@@ -96,7 +96,7 @@ kubectl_prod-job:
   script:
     - echo $KUBECONFIGPROD > kube-config.json
     - yq -p json -o yaml kube-config.json > kube-config.yaml
-    - kubectl --kubeconfig rollout restart deployment morningnews
+    - kubectl --kubeconfig kube-config.yaml rollout restart deployment morningnews
   only:
     - prod
   tags: [dockerfile]
