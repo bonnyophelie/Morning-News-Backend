@@ -55,7 +55,8 @@ sonarqube-check:
       - .sonar/cache
   script:
     - sonar-scanner
-
+  only:
+    - main
 dockerbuild_pre_prod-job:
   stage: build-docker
   before_script:
@@ -82,8 +83,8 @@ dockerbuild_prod-job:
 kubectl_pre_prod-job:
   stage: pre_prod-dep
   script:
-    - echo $KUBECONFIG > kube-config.yml
-    - cat kube-config.yml
+    - echo $KUBECONFIG > kube-config.json
+    - yq -p json -o yaml kube-config.json > kube-config.yaml
     - export KUBECONFIG=kube-config.yml
     - kubectl rollout restart deployment morningnews
   only:
