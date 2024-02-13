@@ -71,7 +71,7 @@ dockerbuild_pre_prod-job:
 dockerbuild_prod-job:
   stage: build-prod
   before_script:
-    - docker login -u  $DOCKER_REGISTRY_USER  -p $DOCKER_PAT
+    - docker login -u $DOCKER_REGISTRY_USER  -p $DOCKER_PAT
 
   script:
     - docker build -t obadahaddad/morningnews:prod --no-cache --build-arg url=$CONNECTION_STRING .
@@ -85,17 +85,17 @@ kubectl_pre_prod-job:
   script:
     - echo $KUBECONFIG > kube-config.json
     - yq -p json -o yaml kube-config.json > kube-config.yaml
-    - cat kube-config.json
-    - cat kube-config.yaml
     - kubectl --kubeconfig kube-config.yaml rollout restart deployment morningnews
   only:
     - pre-prod
   tags: [dockerfile]
 
 kubectl_prod-job:
-  image: alpine/k8s:1.26.13
   stage: prod-dep
   script:
+    - echo $KUBECONFIG > kube-config.json
+    - yq -p json -o yaml kube-config.json > kube-config.yaml
     - kubectl --kubeconfig rollout restart deployment morningnews
   only:
     - prod
+  tags: [dockerfile]
