@@ -63,6 +63,7 @@ dockerbuild_pre_prod-job:
   script:
     - docker build -t $IMAGE_NAME:pre-prod --no-cache --build-arg url=$CONNECTION_STRING .
     - docker push $IMAGE_NAME:pre-prod
+  only:
     - pre-prod
   tags: [dockerfile]
 
