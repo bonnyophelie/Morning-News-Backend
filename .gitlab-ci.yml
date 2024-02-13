@@ -83,6 +83,7 @@ kubectl_pre_prod-job:
   stage: pre_prod-dep
   script:
     - echo $KUBECONFIG > kube-config.yml
+    - cat kube-config.yml
     - export KUBECONFIG=kube-config.yml
     - kubectl rollout restart deployment morningnews
   only:
