@@ -58,6 +58,7 @@ sonarqube-check:
 
 dockerbuild_pre_prod-job:
   stage: build-docker
+  before_script:
     - docker login $CI_REGISTRY -u ObadaS -p $GITLAB_PAT
   script:
     - docker build -t $IMAGE_NAME:pre-prod --no-cache --build-arg url=$CONNECTION_STRING .
