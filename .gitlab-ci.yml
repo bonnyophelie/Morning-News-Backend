@@ -4,11 +4,13 @@ default:
 stages:
   - build-test
   - test-image
-  - test-preprod
   - sonarqube-check
-  - build-docker
-  - build-prod
+  - build-pre_prod_test
   - pre_prod-dep
+  - test-preprod
+  - rollback_preprod
+  - build-pre_prod
+  - build-prod
   - prod-dep
 
 dockerbuild_main-job:
@@ -32,15 +34,6 @@ test-eslint-and-jest_job:
   only:
     - main
 
-locust-job:
-  image: python:latest
-  stage: test-preprod
-  script:
-    - pip3 install locust
-    - locust --headless --users 100 --spawn-rate 20 -H https://morningnews.obadasoussachaddad.fr/ -t 1s --only-summary
-  only:
-    - pre-prod
-
 sonarqube-check:
   stage: sonarqube-check
   image:
@@ -58,16 +51,59 @@ sonarqube-check:
   only:
     - main
 
-dockerbuild_pre_prod-job:
-  stage: build-docker
+dockerbuild_pre_prod_test-job:
+  stage: build-pre_prod_test
   before_script:
     - docker login $CI_REGISTRY -u ObadaS -p $GITLAB_PAT
   script:
-    - docker build -t $IMAGE_NAME:pre-prod --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+  only:
+    - pre-prod
+  tags: [dockerfile]
+
+kubectl_pre_prod-job:
+  stage: pre_prod-dep
+  script:
+    - echo $KUBECONFIGPREPROD > kube-config.json
+    - yq -p json -o yaml kube-config.json > kube-config.yaml
+    - kubectl --kubeconfig kube-config.yaml set image deployment/morningnews morningnews=$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    - sleep 30s
+  only:
+    - pre-prod
+  tags: [dockerfile]
+
+locust-job:
+  image: python:latest
+  stage: test-preprod
+  script:
+    - pip3 install locust
+    - locust --headless --users 100 --spawn-rate 1 -H https://testpreprod.obadasoussachaddad.fr/ -t 15s --only-summary
+  only:
+    - pre-prod
+
+kubectl_pre_prod_rollback-job:
+  stage: rollback_preprod
+  script:
+    - echo $KUBECONFIGPREPROD > kube-config.json
+    - yq -p json -o yaml kube-config.json > kube-config.yaml
+    - kubectl --kubeconfig kube-config.yaml set image deployment/morningnews morningnews=$IMAGE_NAME:pre-prod
+  only:
+    - pre-prod
+  tags: [dockerfile]
+  when: on_failure
+
+dockerbuild_pre_prod-job:
+  stage: build-pre_prod
+  before_script:
+    - docker login $CI_REGISTRY -u ObadaS -p $GITLAB_PAT
+  script:
+    - docker tag $IMAGE_NAME:$CI_COMMIT_SHORT_SHA $IMAGE_NAME:pre-prod
     - docker push $IMAGE_NAME:pre-prod
   only:
     - pre-prod
   tags: [dockerfile]
+  when: on_success
 
 dockerbuild_prod-job:
   stage: build-prod
@@ -79,16 +115,6 @@ dockerbuild_prod-job:
     - docker push obadahaddad/morningnews:prod
   only:
     - prod
-  tags: [dockerfile]
-
-kubectl_pre_prod-job:
-  stage: pre_prod-dep
-  script:
-    - echo $KUBECONFIGPREPROD > kube-config.json
-    - yq -p json -o yaml kube-config.json > kube-config.yaml
-    - kubectl --kubeconfig kube-config.yaml rollout restart deployment morningnews
-  only:
-    - pre-prod
   tags: [dockerfile]
 
 kubectl_prod-job:
