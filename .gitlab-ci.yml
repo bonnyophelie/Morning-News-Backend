@@ -78,7 +78,7 @@ locust-job:
   stage: test-preprod
   script:
     - pip3 install locust
-    - locust --headless --users 100 --spawn-rate 1 -H https://testpreprods.obadasoussachaddad.fr/ -t 15s --only-summary
+    - locust --headless --users 100 --spawn-rate 1 -H https://testpreprod.obadasoussachaddad.fr/ -t 15s --only-summary
   only:
     - pre-prod
 
