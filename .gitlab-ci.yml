@@ -56,7 +56,7 @@ dockerbuild_pre_prod_test-job:
   before_script:
     - docker login $CI_REGISTRY -u ObadaS -p $GITLAB_PAT
   script:
-    - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --no-cache --build-arg url=$CONNECTION_STRING --build-arg token=$NEWSTOKEN .
     - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
   only:
     - pre-prod

@@ -5,7 +5,8 @@ COPY . .
 RUN chown -R node:node /home/node/app
 ARG url
 ENV CONNECTION_STRING $url
-ENV NEWS_API_KEY "2c5a3c941d8d4d349d1c708619e3c378"
+ARG token
+ENV NEWS_API_KEY $token
 USER node
 RUN npm install
 EXPOSE 3000
