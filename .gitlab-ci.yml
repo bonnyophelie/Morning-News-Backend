@@ -18,7 +18,7 @@ dockerbuild_main-job:
   before_script:
     - docker login $CI_REGISTRY -u ObadaS -p $GITLAB_PAT
   script:
-    - docker build -t $IMAGE_NAME:${CI_COMMIT_SHORT_SHA} --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker build -t $IMAGE_NAME:${CI_COMMIT_SHORT_SHA} --no-cache --build-arg url=$CONNECTION_STRING --build-arg token=$NEWSTOKEN .
     - docker push $IMAGE_NAME:${CI_COMMIT_SHORT_SHA}
   only:
     - main
@@ -111,7 +111,7 @@ dockerbuild_prod-job:
     - docker login -u $DOCKER_REGISTRY_USER  -p $DOCKER_PAT
 
   script:
-    - docker build -t obadahaddad/morningnews:prod --no-cache --build-arg url=$CONNECTION_STRING .
+    - docker build -t obadahaddad/morningnews:prod --no-cache --build-arg url=$CONNECTION_STRING --build-arg token=$NEWSTOKEN .
     - docker push obadahaddad/morningnews:prod
   only:
     - prod
