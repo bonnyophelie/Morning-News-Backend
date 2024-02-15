@@ -35,7 +35,7 @@ Le backend est disponible sur le lien suivant : http://localhost:3000
 
 ## Avec Docker
 ```
-docker build -t *tagname** --no-cache --build-arg url=*CONNECTION_STRING* --build-arg token=*NEWSTOKEN* .
+docker build -t *tagname* --no-cache --build-arg url=*CONNECTION_STRING* --build-arg token=*NEWSTOKEN* .
 docker run --name morningnews_backend *tagname* -p 3000:3000 
 ```
 Le backend est disponible sur le lien suivant : http://localhost:3000
