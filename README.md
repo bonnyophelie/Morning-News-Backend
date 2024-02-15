@@ -5,8 +5,8 @@
   - [Pour lancer le backend en local](#pour-lancer-le-backend-en-local)
   - [Pour faire un docker Image](#pour-faire-un-docker-image)
 - [Lancement](#lancement)
-  - [En local](#en-local)
-  - [Construction de l'image docker](#construction-de-limage-docker)
+  - [Sans Docker](#sans-docker)
+  - [Avec Docker](#avec-docker)
 
 # Introduction
 Backend pour le projet Morningnews
@@ -20,20 +20,20 @@ Il est important d'avoir une valeur attribuée à `NEWS_API_KEY` ainsi que `CONN
 - Un token API de [NewsAPI.org](https://newsapi.org/)
 - Le Connection String d'une base de donnée MongoDB (par exemple, [MongoDB Atlas](https://www.mongodb.com/atlas))
 ## Pour lancer le backend en local
-- Nodejs v16 minimum
+- [Nodejs](https://nodejs.org/en/download) v16 minimum
 
 ## Pour faire un docker Image
 - [Docker Engine](https://docs.docker.com/engine/install/)
 
 # Lancement
-## En local
+## Sans Docker
 ```
 npm install
 npm start &
 ```
 Le backend est disponible sur le lien suivant : http://localhost:3000
 
-## Construction de l'image docker
+## Avec Docker
 ```
 docker build -t *tagname** --no-cache --build-arg url=*CONNECTION_STRING* --build-arg token=*NEWSTOKEN* .
 docker run --name morningnews_backend *tagname* -p 3000:3000 
