@@ -17,13 +17,13 @@ La commande pour bien avoir un fichier `.env`:
 Il est important d'avoir une valeur attribuée à `NEWS_API_KEY` ainsi que `CONNECTION_STRING` dans le fichier .env avant de commencer.
 
 # Pré-requis 
+- Un token API de [NewsAPI.org](https://newsapi.org/)
+- Le Connection String d'une base de donnée MongoDB (par exemple, [MongoDB Atlas](https://www.mongodb.com/atlas))
 ## Pour lancer le backend en local
-- nodejs
-- 
+- Nodejs v16 minimum
 
 ## Pour faire un docker Image
 - [Docker Engine](https://docs.docker.com/engine/install/)
-
 
 # Lancement
 ## En local
