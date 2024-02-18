@@ -1,0 +1,11 @@
+.terraform
+env
+env-nu
+env_nu
+.env
+*.tfvars
+*.txt
+ansible.cfg
+dockerconfig.json
+test_mongodb/*
+vars.yml
